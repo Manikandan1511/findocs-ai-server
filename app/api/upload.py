@@ -1,14 +1,14 @@
 from fastapi import APIRouter, UploadFile, File
 from app.services.ocr_service import extract_text_from_file
 from app.services.tagging_service import extract_tags
-from app.services.neo4j_db import Neo4jManager
+from app.services.vertex_ai import VertexAIService
 
 router = APIRouter()
-neo4j_manager = Neo4jManager()  # Initialize Neo4j connection
+vertex_ai = VertexAIService()  # Initialize Vertex AI Service
 
 @router.post("/upload/")
 async def upload_handler(file: UploadFile = File(...)):
-    """Handles document processing: OCR, tagging, classification, and Neo4j storage."""
+    """Handles document processing: OCR, tagging, classification, embeddings"""
 
     # Step 1: Read file contents
     file_content = await file.read()
@@ -27,14 +27,14 @@ async def upload_handler(file: UploadFile = File(...)):
         "locations": tags_info.get("locations", []),
     }
 
-    # Step 4: Store document relationships in Neo4j for relationship-based search
-    neo4j_manager.add_document(doc_id, doc_type, extracted_text, tags)
+    # Step 4: Generate document embeddings using Vertex AI
+    embeddings = vertex_ai.get_embedding(extracted_text)
 
-    # ✅ Step 5: Return processed data (Frontend stores this in Firestore)
+    # ✅ Step 5: Return data to the frontend (Frontend will store in Firestore)
     return {
-        "message": "Document processed successfully!",
         "filename": doc_id,
         "document_type": doc_type,
+        "extracted_text": extracted_text,
         "tags": tags,
-        "extracted_text": extracted_text
+        "embeddings": embeddings,  # Frontend should store this in Firestore
     }
