@@ -1,23 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import ocr
-from app.api import upload
+from app.api.upload import router as upload_router
 
-app = FastAPI()
+# ✅ Initialize FastAPI
+app = FastAPI(title="AI Document Management System", version="1.0")
 
-# Enable CORS
+# ✅ Enable CORS (Allow frontend requests)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change "*" to your frontend's origin for security (e.g., ["http://localhost:5173"])
+    allow_origins=["*"],  # Change this to restrict domains if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include OCR routes
-app.include_router(ocr.router, prefix="/api")
-app.include_router(upload.router, prefix="/api")
+# ✅ Register API Routes
+app.include_router(upload_router, prefix="/api")
 
+# ✅ Root Endpoint
 @app.get("/")
 def root():
-    return {"message": "AI Document Management System is running"}
+    return {"message": "AI Document Management System is Running 🚀"}
