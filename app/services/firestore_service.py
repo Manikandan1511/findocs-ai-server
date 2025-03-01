@@ -25,7 +25,10 @@ def get_document_embeddings():
                     "doc_id": doc.id,
                     "text": doc_data.get("extracted_text", ""),
                     "embeddings": doc_data["embeddings"],  # ✅ Return as-is, numpy conversion happens in search.py
-                    "tags": doc_data.get("tags", {})
+                    "tags": doc_data.get("tags", {}),
+                    "name": doc_data["name"],
+                    "file_url": doc_data["file_url"],
+                    "type": doc_data["type"]
                 })
         
         return embeddings_data

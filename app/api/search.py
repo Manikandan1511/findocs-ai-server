@@ -38,7 +38,10 @@ async def search_documents(query: str = Query(...)):
             "doc_id": doc["doc_id"],
             "text": doc["text"],
             "tags": doc["tags"],
-            "similarity": float(similarity)
+            "similarity": float(similarity),
+            "type": doc["type"],
+            "name": doc["name"],
+            "file_url": doc["file_url"]
         })
 
     # ✅ Sort by similarity (Descending)
