@@ -2,9 +2,19 @@ from fastapi import APIRouter, UploadFile, File
 from app.services.ocr_service import extract_text_from_file
 from app.services.tagging_service import extract_tags
 from app.services.vertex_ai import VertexAIService
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 router = APIRouter()
 vertex_ai = VertexAIService()  # Initialize Vertex AI Service
+
+# ✅ Load Firebase credentials (Only initialize if not already initialized)
+if not firebase_admin._apps:
+    cred = credentials.Certificate("service_account.json")  # Ensure correct path
+    firebase_admin.initialize_app(cred)
+
+# ✅ Initialize Firestore Client
+db = firestore.client()
 
 @router.post("/upload/")
 async def upload_handler(file: UploadFile = File(...)):
@@ -30,11 +40,21 @@ async def upload_handler(file: UploadFile = File(...)):
     # Step 4: Generate document embeddings using Vertex AI
     embeddings = vertex_ai.get_embedding(extracted_text)
 
-    # ✅ Step 5: Return data to the frontend (Frontend will store in Firestore)
-    return {
-        "filename": doc_id,
-        "document_type": doc_type,
+    # ✅ Step 5: Store the document and embeddings in Firestore
+    doc_ref = db.collection("documents").document(doc_id)
+    doc_ref.set({
+        "name": doc_id,
+        "type": doc_type,
         "extracted_text": extracted_text,
         "tags": tags,
-        "embeddings": embeddings,  # Frontend should store this in Firestore
+        "embeddings": embeddings if embeddings else [],  # ✅ Store actual embeddings
+    })
+
+    return {
+        "message": "Document uploaded & stored successfully!",
+        "filename": doc_id,
+        "document_type": doc_type,
+        "tags": tags,
+        "extracted_text": extracted_text,
+        "embeddings": embeddings,  # ✅ Ensure embeddings are returned correctly
     }

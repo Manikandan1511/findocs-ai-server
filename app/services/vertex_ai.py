@@ -3,9 +3,7 @@ from vertexai.language_models import TextEmbeddingModel
 from google.oauth2 import service_account
 import numpy as np
 
-# ✅ Load service account credentials
-SERVICE_ACCOUNT_FILE = "service_account.json"  # Ensure correct path
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
+credentials = service_account.Credentials.from_service_account_file("service_account.json")
 
 # ✅ Initialize Vertex AI with credentials
 PROJECT_ID = "findocs-622a4"
@@ -24,7 +22,7 @@ class VertexAIService:
             print(f"🔍 Generating Embeddings for: {text}")
             embeddings = self.model.get_embeddings([text])[0].values
             print(f"✅ Embeddings generated successfully!")
-            return embeddings
+            return list(embeddings)  # ✅ Convert to list before storing in Firestore
         except Exception as e:
             print(f"❌ Vertex AI Error: {e}")
             return None
