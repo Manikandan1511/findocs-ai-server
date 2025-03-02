@@ -89,9 +89,10 @@ async def upload_handler(file: UploadFile = File(...)):
 
     return {
         "message": "Document uploaded & stored successfully!",
+        "extracted_text": extracted_text,
         "filename": doc_id,
         "document_type": doc_type,
         "tags": tags_info,
-        "fraud_alerts": fraud_alerts,  # ✅ Fraud alerts returned
-        "embeddings": "Stored in Firestore"
+        "fraud_alerts": fraud_alerts,  
+        "embeddings": embeddings,
     }

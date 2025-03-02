@@ -23,7 +23,7 @@ def extract_text_from_file(file_bytes: bytes, filename: str) -> str:
             image = vision.Image(content=file_bytes)
             response = client.text_detection(image=image)
             extracted_text = response.text_annotations[0].description if response.text_annotations else "⚠️ No text detected in image."
-            return extracted_text.strip()
+            return extracted_text if extracted_text else "No text found in img."
 
         # **2. Process PDFs**
         elif file_ext == "pdf":
