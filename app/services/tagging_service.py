@@ -8,13 +8,14 @@ client = language_v1.LanguageServiceClient(credentials=credentials)
 # **Predefined Keywords for Document Type Classification**
 DOCUMENT_TYPE_KEYWORDS = {
     "Invoices": ["invoice", "bill", "amount due", "payment due", "purchase order"],
-    "Tax Documents": ["tax", "IRS", "income statement", "tax return", "Form 1040", "GST", "VAT"],
-    "Bank Statements": ["account summary", "transaction history", "debit", "credit", "bank statement"],
+    "Tax Documents": ["tax", "IRS", "income", "tax return", "Form 1040", "GST", "VAT"],
+    "Bank Statements": ["account summary", "transaction history", "debit", "credit", "bank statement", "statement", "transaction"],
     "Legal Contracts": ["agreement", "contract", "terms and conditions", "non-disclosure agreement"],
     "Medical Reports": ["diagnosis", "prescription", "medical record", "doctor's note", "hospital"],
     "Receipts": ["receipt", "purchase", "transaction ID", "amount paid"],
     "Employment Letters": ["employment verification", "salary slip", "job offer", "HR"],
-    "Academic Certificates": ["degree", "diploma", "certificate", "academic transcript"]
+    "Academic Certificates": ["degree", "diploma", "certificate", "academic transcript"],
+    "Cheque": ["bank", "payee", "bearer"]
 }
 
 def extract_tags(text: str):
